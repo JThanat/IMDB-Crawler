@@ -11,6 +11,8 @@
 
 BOT_NAME = 'imdb'
 
+LOG_FILE = 'logging.log'
+
 SPIDER_MODULES = ['imdb.spiders']
 NEWSPIDER_MODULE = 'imdb.spiders'
 
@@ -20,7 +22,7 @@ SCHEDULER_MEMORY_QUEUE = 'scrapy.squeues.FifoMemoryQueue'
 
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
-#USER_AGENT = 'imdb (+http://www.yourdomain.com)'
+USER_AGENT = 'imdb-crawling-spider:jatuphat@usc.edu'
 
 # Obey robots.txt rules
 ROBOTSTXT_OBEY = True

@@ -3,8 +3,6 @@ import uuid
 import re
 from datetime import datetime
 
-from scrapy.exporters import JsonItemExporter, JsonLinesItemExporter
-
 
 class MovieItem(scrapy.Item):
     id = scrapy.Field()
@@ -16,19 +14,21 @@ class MovieItem(scrapy.Item):
     gross_usa = scrapy.Field()
     runtime = scrapy.Field()
 
-    def print_item(self):
-        print(self['title'])
-        print(self['release_date'])
-        print(self['budget'])
-        print(self['gross_usa'])
-        print(self['runtime'])
-
-
 class IMDBSpider(scrapy.Spider):
-    name = "IMDB"
+    name = "title"
     base_url = 'https://www.imdb.com'
+    handle_httpstatus_list = [301]  # deal with non / in extracted ending
     download_delay = 1.0
     count = 0
+
+    custom_settings = {
+        'FEED_URI': 'title.jl',
+        'FEED_FORMAT': 'jsonlines',
+        'FEED_EXPORTERS': {
+            'json': 'scrapy.exporters.JsonLinesItemExporter',
+        },
+        'FEED_EXPORT_ENCODING': 'utf-8',
+    }
 
     def start_requests(self):
         urls = [
@@ -68,6 +68,7 @@ class IMDBSpider(scrapy.Spider):
         self.count += 1
 
         for span in response.css('span.lister-item-header'):
+
             links = span.css('a::attr(href)').getall()
             if len(links) == 2:
                 # We should go to episode page instead of the movie page
